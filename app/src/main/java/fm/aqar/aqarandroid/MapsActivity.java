@@ -1,9 +1,11 @@
 package fm.aqar.aqarandroid;
 
+import android.app.ProgressDialog;
 import android.graphics.Color;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -39,6 +41,8 @@ public class MapsActivity extends FragmentActivity {
 
     private ArrayList<LatLng> currentSavedBigBoundaries;
     private final String URL_ADS_API = "https://api-dev-sa.aqar.fm/v2/query/ads";
+
+    private ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +101,12 @@ public class MapsActivity extends FragmentActivity {
 
         //instantiate request queue
         queue = Volley.newRequestQueue(this);
+
+        //show progress dialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setTitle("Loading...");
+        progressDialog.setMessage("Fetching initial data...");
+        progressDialog.show();
 
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
@@ -318,6 +328,16 @@ public class MapsActivity extends FragmentActivity {
         }
     }
 
+    private void dismissProgressDialog()
+    {
+        if(progressDialog != null)
+        {
+            progressDialog.dismiss();
+            progressDialog = null;
+            Toast.makeText(this, "Load data done", Toast.LENGTH_SHORT).show();
+        }
+    }
+
     private void fillAdMarkersAndPutOnMap(JSONObject query)
     {
         /*
@@ -350,6 +370,10 @@ public class MapsActivity extends FragmentActivity {
                                 }
 
                                 putMarkerOnMap();
+
+                                // dismiss progress dialog after markers
+                                // put on the map
+                                dismissProgressDialog();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -360,7 +384,8 @@ public class MapsActivity extends FragmentActivity {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("JSONDebug", error.toString());
-
+                        dismissProgressDialog();
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
 
