@@ -113,25 +113,24 @@ public class MapsActivity extends FragmentActivity {
                 // setup initial markers
                 adMarkers = new ArrayList<>();
                 displayAdMarkersOnMap();
-                fillAreaBoundaries(currentSavedBigBoundaries, Color.BLUE);
+                /*fillAreaBoundaries(currentSavedBigBoundaries, Color.BLUE);
 
                 ArrayList<LatLng> boundaries = getViewBoundaries(getCurrentScreenBounds());
                 fillAreaBoundaries(boundaries, Color.YELLOW);
 
                 //Log.d("RAYPOLYGONRESULT", String.valueOf(RayCastingPolygon.isPointInPolygon(boundaries.get(0), currentSavedBigBoundaries)));
-                Log.d("POLYGONRESULT", String.valueOf(isAreaInsideBoundaries(boundaries, currentSavedBigBoundaries)));
+                Log.d("POLYGONRESULT", String.valueOf(isAreaInsideBoundaries(boundaries, currentSavedBigBoundaries)));*/
             }
         });
     }
 
     private boolean isAreaInsideBoundaries(ArrayList<LatLng> area, ArrayList<LatLng> boundaries)
     {
-        boolean ret = true;
 
         for(LatLng latlng: area)
         {
-            ret = ret && isPointInsideArea(latlng, boundaries);
-            if(!ret) return false;
+            if(!isPointInsideArea(latlng, boundaries))
+                return false;
         }
 
         return true;
@@ -199,15 +198,13 @@ public class MapsActivity extends FragmentActivity {
         LatLng northWestBigBoundary = new LatLng(northEastBigBoundary.latitude, southWestBigBoundary.longitude);
         LatLng southEastBigBoundary = new LatLng(southWestBigBoundary.latitude, northEastBigBoundary.longitude);
 
-        ArrayList<LatLng> ret = new ArrayList<>(Arrays.asList
+        return new ArrayList<>(Arrays.asList
         (
             northEastBigBoundary,
             northWestBigBoundary,
             southWestBigBoundary,
             southEastBigBoundary
         ));
-
-        return ret;
     }
 
     private void loadMoreAdMarkers()
@@ -261,15 +258,13 @@ public class MapsActivity extends FragmentActivity {
         LatLng northWest = new LatLng(northEast.latitude, southWest.longitude);
         LatLng southEast = new LatLng(southWest.latitude, northEast.longitude);
 
-        ArrayList<LatLng> ret = new ArrayList<>(Arrays.asList
-                (
-                    northEast,
-                    northWest,
-                    southWest,
-                    southEast
-                ));
-
-        return ret;
+        return new ArrayList<>(Arrays.asList
+        (
+            northEast,
+            northWest,
+            southWest,
+            southEast
+        ));
     }
 
     private boolean isNeedToLoadMoreAdMarkers()
